@@ -13,6 +13,18 @@ import time
 import IPython.display as display
 import PIL.Image
 
+def remove_flat_weights(model,weight_file):
+    model.load_weights(weight_file)
+    fl = 0
+    c = 0
+    for layer in model.layers:
+        if isinstance(layer, layers.Flatten):
+            fl = 1
+        if fl == 1: c += 1
+    print(c)
+    for i in range(c): model.pop()
+    model.save_weights('dream_weights.h5')
+
 def build_dreamer(mod_in):
     mod_out = keras.Sequential()
     l1_config = mod_in.layers[0].get_config()
@@ -106,10 +118,14 @@ def deprocess(img):
   img = 255*(img + 1.0)/2.0
   return tf.cast(img, tf.uint8)
 
-def DreamMyImage(image_file,model,weights_file,output_name,layer_names=[],nlayer=4,octaves=True,octave_scale=1.4,nstep=10,step_size=0.035):
+def DreamMyImage(image_file,model,weights_file,output_name,layer_names=[],nlayer=4,octaves=True,octave_scale=1.4,nstep=25,step_size=0.02,reweight=True):
 
     dreamer = build_dreamer(model)
-    dreamer.load_weights(weights_file)
+    if reweight:
+        remove_flat_weights(model,weights_file)
+        dreamer.load_weights('dream_weights.h5')
+    else:
+        dreamer.load_weights(weights_file)
 
     if len(layer_names) == 0:
         names = []

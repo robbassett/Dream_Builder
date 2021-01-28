@@ -55,4 +55,4 @@ class CNN_classifier():
 if __name__ == '__main__':
 
     CCLS = CNN_classifier()
-    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/cmdd.h5','test_dream.png')
+    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/cmdd.h5','test_dream.png',reweight=False)
