@@ -131,7 +131,7 @@ def DreamMyImage(image_file,model,weights_file,output_name,layer_names=[],nlayer
         names = []
         for layer in dreamer.layers: names.append(layer.name)
         names = np.array(names)
-        names = np.random.choice(names,4,replace=False)
+        names = np.random.choice(names,nlayer,replace=False)
     else:
         names = layer_names
         
