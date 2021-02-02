@@ -25,20 +25,21 @@ class CNN_classifier():
         
         model = keras.Sequential()
         
-        model.add(layers.Conv2D(input_shape=(73,73,3),filters=25,kernel_size=(5,5),**C2D_dic))
+        model.add(layers.Conv2D(input_shape=(73,73,3),filters=25,kernel_size=(3,3),**C2D_dic))
+        model.add(layers.Conv2D(25,(3,3),**C2D_dic))
         model.add(layers.MaxPool2D(pool_size=(2,2)))
-        model.add(layers.Dropout(0.2))
         
-        model.add(layers.Conv2D(50,(5,5),**C2D_dic))
+        model.add(layers.Conv2D(50,(3,3),**C2D_dic))
+        model.add(layers.Conv2D(50,(3,3),**C2D_dic))
         model.add(layers.MaxPool2D(pool_size=(2,2)))
-        model.add(layers.Dropout(0.2))
         
-        model.add(layers.Conv2D(70,(5,5),**C2D_dic))
+        model.add(layers.Conv2D(70,(3,3),**C2D_dic))
+        model.add(layers.Conv2D(70,(3,3),**C2D_dic))
         model.add(layers.MaxPool2D(pool_size=(2,2)))
-        model.add(layers.Dropout(0.2))
         
         model.add(layers.Flatten())
         model.add(layers.Dense(100,activation='relu'))
+        model.add(layers.Dropout(0.2))
         model.add(layers.Dense(100,activation='relu'))
         model.add(layers.Dropout(0.2))
 
@@ -69,19 +70,20 @@ if __name__ == '__main__':
     # at the end. Play around with the kwargs too for the best results!
     
     kwdic = {
-        'nstep':30,
-        'octave_scale':1.5,
-        'step_size':0.04
+        'nstep':25,
+        'octave_scale':1.4,
+        'step_size':0.015
     }
 
     # Maximise 3 random layers:
     CCLS = CNN_classifier()
-    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/tst_CNN.h5','test_dream1.png',nlayer=3,**kwdic)
+    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/tst_CNN_scaled.h5','test_dream1.png',nlayer=3,**kwdic)
     
     # Maximise a specific layers, here you can print the summary of the model to get all the layer names inside.
     # Be aware that if you create multiple models in one script without specifying the names of each layer, the
     # names will change slightly for each instance. Activating different layers will produce wildly different
     # results, so play around here as well.
     CCLS = CNN_classifier()
-    lnames = ['conv2d_4']
-    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/tst_CNN.h5','test_dream2.png',layer_names=lnames,**kwdic)
+    CCLS.model.summary()
+    lnames = ['conv2d_8']
+    DreamMyImage('images/garcia.jpg',CCLS.model,'test_weights/tst_CNN_scaled.h5',f'test_dream2.png',layer_names=lnames,**kwdic)
